@@ -79,7 +79,7 @@ router.post("/blog-submit", async (req, res, next) => {
       author: author,
       category: category,
       createdAt: new Date(),
-      id: Number(lastBlog.id + 1),
+      id: Number(lastBlog.id) + 1,
       lastModified: new Date(),
     };
 

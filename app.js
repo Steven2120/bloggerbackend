@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -10,21 +11,14 @@ var blogsRouter = require("./routes/blogs");
 var adminRouter = require("./routes/admin");
 
 var app = express();
-
 var { mongoConnect } = require("./mongo.js");
 mongoConnect();
 
-const cors = require("cors");
-
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
   })
 );
-
-app.options("*", cors());
-
-app.use("/blogs", blogsRouter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
