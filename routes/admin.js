@@ -8,17 +8,20 @@ router.get("/blog-list", async (req, res, next) => {
     const collection = await blogsDB().collection("blogs50");
     const blogs50 = await collection
       .find({})
-      .projection({
+      .sort({ id: -1 })
+      .project({
         // 1 = includes, 0 = excludes
         title: 1,
         author: 1,
         createdAt: 1,
         lastModified: 1,
+        text: 1,
+        id: 1,
       })
       .toArray();
-    res.status(200).json({ Message: "Success", success: true });
+    res.status(200).json({ message: blogs50, success: true });
   } catch (error) {
-    res.status(500).json({ Message: "Error fetching posts.", success: false });
+    res.status(500).json({ message: "Error fetching posts.", success: false });
   }
 });
 
@@ -35,6 +38,7 @@ router.put("/edit-blog", async (req, res) => {
     const newPostData = req.body;
     const date = new Date();
     const updateBlog = { ...newPostData, lastModified: date };
+    const collection = await blogsDB().collection("blogs50");
 
     await collection.updateOne(
       { id: newPostData.id },

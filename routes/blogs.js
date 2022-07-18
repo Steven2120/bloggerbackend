@@ -13,7 +13,6 @@ router.get("/all-blogs", async (req, res) => {
     const limit = Number(req.query.limit);
     const skip = Number(req.query.limit) * (Number(req.query.page) - 1);
     const sortField = req.query.sortField;
-    // if sort field is equal to "ASC", then sequential (1), if not, sequential in reverse order (-1).
     const sortOrder = req.query.sortOrder === "ASC" ? 1 : -1;
     const filterField = req.query.filterField;
     const filterValue = req.query.filterValue;
@@ -40,12 +39,19 @@ router.get("/all-blogs", async (req, res) => {
   }
 });
 
+router.get("/single-blog/:blogId", async (req, res) => {
+  try {
+    const blogId = Number(req.params.blogId);
+    const collection = await blogsDB().collection("blogs50");
+    const blogPost = await collection.findOne({ id: blogId });
+    res.status(200).json({ message: blogPost, success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Error", success: false });
+  }
+});
+
 router.post("/blog-submit", async (req, res, next) => {
   try {
-    // const collection = await blogsDB().collection("blogs50");
-    // const sortedBlogArray = await collection.find({}).sort({ id: 1 }).toArray();
-    // const lastBlog = sortedBlogArray[sortedBlogArray.length - 1];
-
     const blogIsValid = serverCheckBlogIsValid(req.body);
 
     if (!blogIsValid) {
